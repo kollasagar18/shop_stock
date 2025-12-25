@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ration Shop - Home</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4CAF50, #2E8B57);
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #2E8B57;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .buy {
+            background-color: #4CAF50;
+        }
+
+        .sale {
+            background-color: #FF9800;
+        }
+
+        .stock {
+            background-color: #2196F3;
+        }
+
+        button:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ration Shop</h1>
+
+    <a href="/buy">
+        <button class="buy">Buy Stock</button>
+    </a>
+
+    <a href="/sale">
+        <button class="sale">Sale Stock</button>
+    </a>
+
+    <a href="/total_stack">
+        <button class="stock">Total Stock</button>
+    </a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sale Stock</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            width: 380px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #F57C00;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #FF9800;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #FB8C00;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back a {
+            text-decoration: none;
+            color: #F57C00;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sale Stock</h2>
+
+    <form action="{% url 'sale_stack' %}" method="post">
+        {% csrf_token %}
+
+        <label>Rice</label>
+        <input type="number" name="rice" value="0" min="0">
+
+        <label>Sugar</label>
+        <input type="number" name="sugar" value="0" min="0">
+
+        <label>Palmolein Oil</label>
+        <input type="number" name="palmolein_oil" value="0" min="0">
+
+        <label>Red Gram Dal</label>
+        <input type="number" name="red_gram_dal" value="0" min="0">
+
+        <label>Jowar</label>
+        <input type="number" name="jowar" value="0" min="0">
+
+        <label>Raagi</label>
+        <input type="number" name="raagi" value="0" min="0">
+
+        <button type="submit">Sale Stock</button>
+    </form>
+
+    <div class="back">
+        <a href="{% url 'home' %}">⬅ Back to Home</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,8 +1,11 @@
 import mysql.connector
+import os
+
 def db_con():
     return mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Kollasagar@93",
-    database="ration_shop"
-)
+        host=os.getenv("mysql.railway.internal"),
+        user=os.getenv("root"),
+        password=os.getenv("IQThGwvASQrDbFnqXkJsGWOzEfBBJXsH"),
+        database=os.getenv("railway"),
+        port=os.getenv("3306")
+    )

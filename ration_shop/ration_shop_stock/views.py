@@ -2,6 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .db import db_con
 from rest_framework.decorators import api_view
+import pandas as pd
+import mysql.connector
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from rest_framework.response import Response
+import os
+
 
 # ---------------- HOME PAGES ----------------
 
@@ -13,6 +20,8 @@ def sale(request):
 
 def buy(request):
     return render(request, "buy.html")
+def predict_page(request):
+    return render(request, "predict.html")
 
 # ---------------- TOTAL STOCK (GRAPH) ----------------
 
@@ -33,8 +42,15 @@ def total_stack(request):
     plt.show()
 
     return render(request, "home.html")
+
+
+
+
 @api_view(["POST"])
 def add_stock(request):
+    
+    
+    
     data = request.POST.dict()
     db = db_con()
     cu = db.cursor()
@@ -136,7 +152,7 @@ def sale_stack(request):
         else:
             return HttpResponse("Out of stock: red gram dal")
 
-        # jowar
+       
         cu.execute("select stock from ratio_shop_stock where items=%s", ("jowar",))
         jowar=cu.fetchall()
         if int(jowar[0][0]) >= jo:
@@ -163,3 +179,102 @@ def sale_stack(request):
     finally:
         cu.close()
         db.close()
+@api_view(["POST"])
+def predict_data(request):
+
+    month_names = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December",
+    }
+
+    product = request.data.get("product")
+
+    allowed_products = [
+        "rice",
+        "wheat",
+        "sugar",
+        "oil",
+        "dal",
+        "salt"
+    ]
+
+    if product not in allowed_products:
+        return Response({
+            "error": "Invalid product"
+        })
+
+    # Graph Data
+    graph_query = f"""
+    SELECT month_name, {product}
+    FROM sales_history
+    """
+
+    graph_data = pd.read_sql(graph_query, db_con())
+
+    import matplotlib.pyplot as plt
+
+    plt.figure(figsize=(8,5))
+    plt.bar(
+        graph_data["month_name"],
+        graph_data[product]
+    )
+
+    plt.xlabel("Month")
+    plt.ylabel("Sales")
+    plt.title(f"{product.capitalize()} Sales History")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig("ration_shop_stock/static/graph.png")
+    plt.close()
+    # ML Data
+    query = f"""
+    SELECT month_no, {product}
+    FROM sales_history
+    """
+
+    data = pd.read_sql(query, db_con())
+
+    X = data[['month_no']]
+    y = data[product]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=42
+    )
+
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    current_month = data['month_no'].max()
+
+    next_month = current_month + 1
+
+    if next_month > 12:
+        next_month = 1
+
+    next_month_name = month_names[next_month]
+
+    prediction =model.predict(
+    pd.DataFrame(
+        {'month_no': [next_month]}
+    )
+)
+
+    return Response({
+    "product": product,
+    "next_month": next_month_name,
+    "predicted_sales": round(float(prediction[0]), 2),
+    "graph": "/static/graph.png"
+})

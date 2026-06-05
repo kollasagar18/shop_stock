@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Prediction</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            margin:40px;
+            background:#f4f4f4;
+        }
+
+        .container{
+            width:500px;
+            margin:auto;
+            padding:20px;
+            background:white;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align:center;
+        }
+
+        select,
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+        }
+
+        button{
+            background:#4CAF50;
+            color:white;
+            border:none;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#45a049;
+        }
+
+        .result{
+            margin-top:20px;
+            padding:15px;
+            background:#f5f5f5;
+            border-radius:8px;
+        }
+
+        .graph{
+            margin-top:20px;
+            text-align:center;
+        }
+
+        .graph img{
+            width:100%;
+            border-radius:8px;
+            border:1px solid #ddd;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Stock Demand Prediction</h2>
+
+    <form id="predictForm">
+
+        <label>Select Product</label>
+
+        <select id="product">
+
+            <option value="rice">Rice</option>
+            <option value="wheat">Wheat</option>
+            <option value="sugar">Sugar</option>
+            <option value="oil">Oil</option>
+            <option value="dal">Dal</option>
+            <option value="salt">Salt</option>
+
+        </select>
+
+        <button type="submit">
+            Predict Next Month Sales
+        </button>
+
+    </form>
+
+    <!-- Graph Section -->
+
+    <div class="graph" id="graphDiv" style="display:none;">
+
+        <h3>Sales History Graph</h3>
+
+        <img id="graphImage">
+
+    </div>
+
+    <!-- Result Section -->
+
+    <div class="result" id="result" style="display:none;">
+
+        <h3>Prediction Result</h3>
+
+        <p>
+            <strong>Product:</strong>
+            <span id="product_name"></span>
+        </p>
+
+        <p>
+            <strong>Next Month:</strong>
+            <span id="month"></span>
+        </p>
+
+        <p>
+            <strong>Predicted Sales:</strong>
+            <span id="sales"></span>
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("predictForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const product =
+        document.getElementById("product").value;
+
+    const response = await fetch("/predict",{
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            product:product
+        })
+    });
+
+    const data = await response.json();
+
+    // Show Result
+
+    document.getElementById("result")
+        .style.display = "block";
+
+    document.getElementById("product_name")
+        .innerText = data.product;
+
+    document.getElementById("month")
+        .innerText = data.next_month;
+
+    document.getElementById("sales")
+        .innerText = data.predicted_sales + " KG";
+
+    // Show Graph
+
+    if(data.graph){
+
+        document.getElementById("graphDiv")
+            .style.display = "block";
+
+        document.getElementById("graphImage")
+            .src = data.graph + "?t=" + new Date().getTime();
+    }
+
+});
+
+</script>
+
+</body>
+</html>

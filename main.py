@@ -178,4 +178,5 @@ def sale_stack():
     finally:
         cu.close()
         db.close()
-print(sale_stack())
+if __name__ == "__main__":
+    print("Application Started")

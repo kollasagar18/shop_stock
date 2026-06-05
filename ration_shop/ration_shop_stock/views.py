@@ -10,7 +10,6 @@ from rest_framework.response import Response
 import os
 
 
-# ---------------- HOME PAGES ----------------
 
 def home(request):
     return render(request, "home.html")
@@ -22,8 +21,6 @@ def buy(request):
     return render(request, "buy.html")
 def predict_page(request):
     return render(request, "predict.html")
-
-# ---------------- TOTAL STOCK (GRAPH) ----------------
 
 def total_stack(request):
     import matplotlib.pyplot as plt
@@ -116,7 +113,7 @@ def sale_stack(request):
         jo = int(data["jowar"])
         ra = int(data["raagi"])
 
-        # rice
+       
         cu.execute("select stock from ratio_shop_stock where items=%s", ("rice",))
         rice=cu.fetchall()
         if int(rice[0][0]) >= ri:
@@ -134,7 +131,7 @@ def sale_stack(request):
         else:
             return HttpResponse("Out of stock: sugar")
 
-        # palmolein oil
+   
         cu.execute("select stock from ratio_shop_stock where items=%s", ("palmolein_oil",))
         palmolein=cu.fetchall()
         if int(palmolein[0][0]) >= pa:
@@ -143,7 +140,7 @@ def sale_stack(request):
         else:
             return HttpResponse("Out of stock: palmolein oil")
 
-        # red gram dal
+    
         cu.execute("select stock from ratio_shop_stock where items=%s", ("red_gram_dal",))
         red=cu.fetchall()
         if int(red[0][0]) >= re:
@@ -161,7 +158,6 @@ def sale_stack(request):
         else:
             return HttpResponse("Out of stock: jowar")
 
-        # raagi
         cu.execute("select stock from ratio_shop_stock where items=%s", ("raagi",))
         raagi=cu.fetchall()
         if int(raagi[0][0]) >= ra:
@@ -200,20 +196,20 @@ def predict_data(request):
     product = request.data.get("product")
 
     allowed_products = [
-        "rice",
-        "wheat",
-        "sugar",
-        "oil",
-        "dal",
-        "salt"
-    ]
+    "rice",
+    "sugar",
+    "jowar",
+    "ragi",
+    "palmolein_oil",
+    "red_gram_dal"
+]
 
     if product not in allowed_products:
         return Response({
             "error": "Invalid product"
         })
 
-    # Graph Data
+   
     graph_query = f"""
     SELECT month_name, {product}
     FROM sales_history
